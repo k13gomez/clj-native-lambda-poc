@@ -1,8 +1,10 @@
 (ns clj-native-lambda-poc.core
-  (:require [clj-native-lambda-poc.runtime :as runtime])
+  (:require [clj-native-lambda-poc.runtime :as runtime]
+            [clj-native-lambda-poc.example :as example])
   (:gen-class))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (runtime/handle-next-request!))
+  (while true
+    (runtime/handle-next-request!
+      #'example/echo-handler)))
