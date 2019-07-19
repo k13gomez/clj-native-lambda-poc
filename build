@@ -1,0 +1,20 @@
+#!/bin/bash
+LEIN_URL="https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein"
+GRAALVM_VERSION="19.1.0"
+GRAALVM_IMAGE="oracle/graalvm-ce:$GRAALVM_VERSION"
+GRAALVM_HOME="/opt/graalvm-ce-$GRAALVM_VERSION"
+CERTS_PATH="jre/lib/security/cacerts"
+WORK_PATH="/root/workspace"
+
+DEPS_INSTALL_CMD="yum -y install zip && gu install native-image"
+LEIN_INSTALL_CMD="curl $LEIN_URL -o /usr/bin/lein && chmod +x /usr/bin/lein && lein"
+INSTALL_CMD="$DEPS_INSTALL_CMD && $LEIN_INSTALL_CMD"
+BUILD_CMD="cd $WORK_PATH && lein do clean, with-profile uberjar native-image"
+SUNEC_CMD="cp $GRAALVM_HOME/jre/lib/amd64/libsunec.so libsunec.so"
+PACK_CMD="rm *.zip && cp target/uberjar/bootstrap bootstrap && zip serverless.zip bootstrap libsunec.so"
+PIPELINE_CMD="$INSTALL_CMD && $BUILD_CMD && $SUNEC_CMD && $PACK_CMD"
+
+docker run -it --rm \
+        -v $(pwd):$WORK_PATH \
+        -v $JAVA_HOME/$CERTS_PATH:$GRAALVM_HOME/$CERTS_PATH \
+        $GRAALVM_IMAGE bash -c "$PIPELINE_CMD"

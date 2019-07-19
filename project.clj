@@ -9,15 +9,15 @@
                  [org.martinklepsch/clj-http-lite "0.4.1"]]
   :plugins [[io.taylorwood/lein-native-image "0.3.0"]]
   :main clj-native-lambda-poc.core
-  :native-image {:name "clj-native-lambda"
-                 :opts ["--initialize-at-build-time"
-                        "--enable-http"
-                        "--enable-https"
-                        "--enable-all-security-services"
-                        ;"--report-unsupported-elements-at-runtime"
-                        "--no-server"
-                        "--no-fallback"
-                        "--verbose"]}
   :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all
+                       :native-image {:name  "bootstrap"
+                                      :opts ["--initialize-at-build-time"
+                                             "--enable-http"
+                                             "--enable-https"
+                                             "--enable-all-security-services"
+                                             ;"--report-unsupported-elements-at-runtime"
+                                             "--no-server"
+                                             "--no-fallback"
+                                             "--verbose"]}}})
