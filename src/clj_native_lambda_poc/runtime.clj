@@ -84,6 +84,7 @@
     (= handler-name a-name)))
 
 (defn resolve-handler
+  "resolve the current handler from a list of handlers"
   [& handlers]
   {:pre [(every? var? handlers)]}
   (let [handler-name @handler
@@ -97,6 +98,7 @@
     request-handler))
 
 (defn run-lambda!
+  "run the specified lambda request-handler in a loop"
   [request-handler]
   (try
     (loop [{:keys [input context]} (next-request!)] 
@@ -110,6 +112,7 @@
       (init-failure! failure))))
 
 (defn start!
+  "starts the runtime with the specified lambda function handlers"
   [& handlers]
   (-> (apply resolve-handler handlers)
       (run-lambda!))) 
