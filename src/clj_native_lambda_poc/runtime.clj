@@ -108,3 +108,8 @@
       (recur (next-request!)))
     (catch Throwable failure
       (init-failure! failure))))
+
+(defn start!
+  [& handlers]
+  (-> (apply resolve-handler handlers)
+      (run-lambda!))) 

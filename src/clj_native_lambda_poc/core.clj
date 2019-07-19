@@ -5,6 +5,5 @@
 
 (defn -main
   [& args]
-  (runtime/run-lambda!
-    (runtime/resolve-handler 
-      #'example/echo-handler)))
+  (runtime/start!
+    #'example/echo-handler))
