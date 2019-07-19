@@ -5,6 +5,6 @@
 
 (defn -main
   [& args]
-  (while true
-    (runtime/handle-next-request!
+  (runtime/run-lambda!
+    (runtime/resolve-handler 
       #'example/echo-handler)))
