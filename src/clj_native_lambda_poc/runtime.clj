@@ -1,8 +1,7 @@
 (ns clj-native-lambda-poc.runtime
   (:require [clj-http.lite.client :as client]
             [cheshire.core :as json]
-            [clojure.set :refer [rename-keys]]
-            [clojure.tools.logging :as log]))
+            [clojure.set :refer [rename-keys]]))
 
 (defn- get-env
   [^String var-name]
@@ -59,7 +58,7 @@
 
 (defn- init-failure!
   [failure]
-  (log/error failure "initialization error")
+  (println failure)
   (let [failure-url (format "http://%s/2018-06-01/runtime/init/error" @runtime-api)]
     (->> (->error-response failure)
          (json/generate-string)
@@ -68,6 +67,7 @@
 
 (defn- post-failure!
   [{:keys [aws-request-id]} failure]
+  (println failure)
   (let [failure-url (format "http://%s/2018-06-01/runtime/invocation/%s/error" @runtime-api aws-request-id)]
     (->> (->error-response failure)
          (json/generate-string)
