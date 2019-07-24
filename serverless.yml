@@ -5,7 +5,7 @@ service: clj-native-lambda-poc
 provider:
   name: aws
   runtime: provided
-  memorySize: 128
+  memorySize: 1024
   timeout: 6
   versionFunctions: false
   stage: dev
