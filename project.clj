@@ -14,6 +14,7 @@
   :plugins [[io.taylorwood/lein-native-image "0.3.0"]]
   :main clj-native-lambda-poc.core
   :target-path "target/%s"
+  :global-vars {*warn-on-reflection* true}
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
                        :native-image {:name  "bootstrap"
