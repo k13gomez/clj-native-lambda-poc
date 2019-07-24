@@ -8,6 +8,7 @@
                  [org.martinklepsch/clj-http-lite "0.4.1"]
                  [org.clojure/tools.logging       "0.4.1"]
                  [software.amazon.awssdk/dynamodb "2.7.8"]
+                 [software.amazon.awssdk/s3 "2.7.8"]
                  [software.amazon.awssdk/url-connection-client "2.7.8"]
                  [ch.qos.logback/logback-classic  "1.2.3"]]
   :plugins [[io.taylorwood/lein-native-image "0.3.0"]]
@@ -16,7 +17,8 @@
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
                        :native-image {:name  "bootstrap"
-                                      :opts ["--initialize-at-build-time"
+                                      :opts ["-H:ReflectionConfigurationFiles=./reflection-config.json"
+                                             "--initialize-at-build-time"
                                              "--enable-http"
                                              "--enable-https"
                                              "--enable-all-security-services"

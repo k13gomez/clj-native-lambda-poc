@@ -8,4 +8,5 @@
   (example/initialize!)
   (runtime/start!
     #'example/echo-handler
-    #'example/dynamodb-handler))
+    #'example/dynamodb-handler
+    #'example/s3-handler))
