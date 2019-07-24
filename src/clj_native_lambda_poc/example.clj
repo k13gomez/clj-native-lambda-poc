@@ -29,12 +29,14 @@
     (reset! dynamodb-client dynamodb-client*)
     (reset! s3-client s3-client*)))
 
+;; uses rest-json protocol
 (defn dynamodb-handler
   [input context]
   (let [^DynamoDbClient client @dynamodb-client
         ^ListTablesResponse response (.listTables client)]
     (.tableNames response)))
 
+;; uses rest-xml protocol
 (defn s3-handler
   [input context]
   (let [^S3Client client @s3-client
