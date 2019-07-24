@@ -1,4 +1,5 @@
 (ns clj-native-lambda-poc.example
+  (:require [clj-http.lite.client :as client])
   (:import [software.amazon.awssdk.http SdkHttpClient]
            [software.amazon.awssdk.http.urlconnection UrlConnectionHttpClient]
            [software.amazon.awssdk.auth.credentials EnvironmentVariableCredentialsProvider]
@@ -43,6 +44,11 @@
         ^ListBucketsResponse response (.listBuckets client)]
     (for [^Bucket bucket (.buckets response)]
       (.name bucket))))
+
+(defn http-handler
+  [input context]
+  (-> (client/get "https://api.ipify.org?format=json")
+    (get :body)))
 
 (defn echo-handler
   [input context]
