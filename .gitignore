@@ -16,3 +16,4 @@ bootstrap
 *.so
 .idea
 *.iml
+.serverless

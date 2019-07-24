@@ -1,0 +1,44 @@
+service: clj-native-lambda-poc 
+#app: your-app-name
+#tenant: your-tenant-name
+
+provider:
+  name: aws
+  runtime: provided
+  memorySize: 128
+  timeout: 6
+  versionFunctions: false
+  stage: dev
+  region: us-east-1
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+        - "dynamodb:*"
+        - "lambda:*"
+        - "cloudwatch:*"  
+      Resource: "*" 
+
+  environment:
+    ENV: dev
+
+package:
+  exclude:
+    - ./**
+  include:
+    - bootstrap
+    - libsunec.so
+
+functions:
+  echo-example:
+    handler: clj-native-lambda-poc.example/echo-handler
+
+  dynamodb-example:
+    handler: clj-native-lambda-poc.example/dynamodb-handler
+  
+  s3-example:
+    handler: clj-native-lambda-poc.example/s3-handler
+
+  http-example:
+    handler: clj-native-lambda-poc.example/http-handler 
