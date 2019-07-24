@@ -1,9 +1,9 @@
 (ns clj-native-lambda-poc.example
-  (:import [software.amazon.awssdk.http.urlconnection UrlConnectionHttpClient]
-           [software.amazon.awssdk.http SdkHttpClient]
+  (:import [software.amazon.awssdk.http SdkHttpClient]
+           [software.amazon.awssdk.http.urlconnection UrlConnectionHttpClient]
+           [software.amazon.awssdk.auth.credentials EnvironmentVariableCredentialsProvider]
            [software.amazon.awssdk.services.dynamodb DynamoDbClient DynamoDbClientBuilder]
            [software.amazon.awssdk.services.dynamodb.model ListTablesResponse]
-           [software.amazon.awssdk.auth.credentials EnvironmentVariableCredentialsProvider]
            [software.amazon.awssdk.services.s3 S3Client S3ClientBuilder]
            [software.amazon.awssdk.services.s3.model ListBucketsResponse Bucket]))
 
