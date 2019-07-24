@@ -97,22 +97,29 @@
         (throw failure)))
     request-handler))
 
+(defn- handle-next-request!
+  [request-handler & {:keys [initialize]}]
+  (try
+    (let [{:keys [input context]} (next-request!)]
+      (try
+        (let [response (request-handler input context)]
+          (post-success! context response))
+        (catch Throwable failure
+          (post-failure! context failure))))
+    (catch Exception failure
+      (println failure)
+      (when initialize
+        (init-failure! failure)))))
+
 (defn run-lambda!
   "run the specified lambda request-handler in a loop"
   [request-handler]
-  (try
-    (loop [{:keys [input context]} (next-request!)] 
-      (try
-        (->> (request-handler input context)
-             (post-success! context))
-        (catch Throwable failure
-          (post-failure! context failure)))
-      (recur (next-request!)))
-    (catch Throwable failure
-      (init-failure! failure))))
+  (handle-next-request! request-handler :initialize true)
+  (while true
+    (handle-next-request! request-handler)))
 
 (defn start!
   "starts the runtime with the specified lambda function handlers"
   [& handlers]
   (-> (apply resolve-handler handlers)
-      (run-lambda!))) 
+      (run-lambda!)))
