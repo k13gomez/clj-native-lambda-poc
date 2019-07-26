@@ -42,3 +42,6 @@ functions:
 
   http-example:
     handler: clj-native-lambda-poc.example/http-handler 
+
+  trace-example:
+    handler: clj-native-lambda-poc.example/trace-handler 

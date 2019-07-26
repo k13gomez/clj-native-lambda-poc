@@ -1,11 +1,27 @@
 (ns clj-native-lambda-poc.runtime
   (:require [clj-http.lite.client :as client]
             [cheshire.core :as json]
-            [clojure.set :refer [rename-keys]]))
+            [clojure.set :refer [rename-keys]])
+  (:import [java.lang.reflect Field]
+           [java.util Map]))
+
+(def ^:private mutable-env
+  (delay
+    (let [env (System/getenv)
+          ^Class cls (class env)
+          ^Field fld (.getDeclaredField cls "m")]
+      (.setAccessible fld true)
+      (let [^Map m-env (.get fld env)]
+        m-env))))
 
 (defn- get-env
   [^String var-name]
   (System/getenv var-name))
+
+(defn- set-env
+  [^String var-name ^String env-value]
+  (let [^Map env @mutable-env]
+    (.put env var-name env-value)))
 
 (def ^:private runtime-api
   (delay (get-env "AWS_LAMBDA_RUNTIME_API")))
@@ -100,7 +116,9 @@
 (defn- handle-next-request!
   [request-handler & {:keys [initialize]}]
   (try
-    (let [{:keys [input context]} (next-request!)]
+    (let [{:keys [input context]} (next-request!)
+          {:keys [trace-id]} context]
+      (set-env "_X_AMZN_TRACE_ID" trace-id) ;;; propagate tracing header
       (try
         (let [response (request-handler input context)]
           (post-success! context response))

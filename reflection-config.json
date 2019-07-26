@@ -2,5 +2,25 @@
   {
     "name":"com.sun.xml.internal.stream.XMLInputFactoryImpl",
     "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name" : "java.util.Collections$UnmodifiableMap",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredClasses" : true,
+    "allPublicClasses" : true,
+    "allDeclaredFields" : true
+  },
+  {
+    "name" : "java.lang.ProcessEnvironment$StringEnvironment",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "allDeclaredClasses" : true,
+    "allPublicClasses" : true,
+    "allDeclaredFields" : true
   }
 ]

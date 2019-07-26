@@ -10,4 +10,5 @@
     #'example/echo-handler
     #'example/dynamodb-handler
     #'example/s3-handler
-    #'example/http-handler))
+    #'example/http-handler
+    #'example/trace-handler))
