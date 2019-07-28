@@ -53,7 +53,3 @@
 (defn echo-handler
   [input]
   input)
-
-(defn trace-handler
-  []
-  {"_X_AMZN_TRACE_ID" (System/getenv "_X_AMZN_TRACE_ID")})
