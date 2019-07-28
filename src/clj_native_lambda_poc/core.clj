@@ -5,7 +5,6 @@
 
 (defn -main
   [& args]
-  (example/initialize!)
   (runtime/start!
     #'example/echo-handler
     #'example/dynamodb-handler

@@ -1,8 +1,10 @@
 (ns clj-native-lambda-poc.runtime
   (:require [clj-http.lite.client :as client]
             [cheshire.core :as json]
+            [clojure.string :as string]
             [clojure.set :refer [rename-keys]])
   (:import [java.lang.reflect Field]
+           [clojure.lang Var Symbol]
            [java.util Map]))
 
 (def ^:private mutable-env
@@ -90,18 +92,18 @@
          (assoc {} :body)
          (client/post failure-url))))
 
-(defn- handler-name-equals 
+(defn- handler-name-equals
   [handler-name handler]
   {:pre [(string? handler-name) (var? handler)]}
   (let [a-meta (meta handler)
         a-ns   (-> a-meta :ns str)
         a-fn   (-> a-meta :name str)
-        a-name (str a-ns "/" a-fn)] 
+        a-name (str a-ns "/" a-fn)]
     (= handler-name a-name)))
 
-(defn resolve-handler
+(defn- resolve-handler
   "resolve the current handler from a list of handlers"
-  [& handlers]
+  [handlers]
   {:pre [(every? var? handlers)]}
   (let [handler-name @handler
         handler-predicate (partial handler-name-equals handler-name)
@@ -110,7 +112,7 @@
       (let [failure (ex-info (format "unable to resolve lambda request handler: %s" handler-name) 
                              {:handler handler-name})]
         (init-failure! failure)
-        (throw failure)))
+        (throw failure))) 
     request-handler))
 
 (defn- handle-next-request!
@@ -124,20 +126,31 @@
           (post-success! context response))
         (catch Throwable failure
           (post-failure! context failure))))
-    (catch Exception failure
+    (catch Throwable failure
       (println failure)
       (when initialize
         (init-failure! failure)))))
 
-(defn run-lambda!
-  "run the specified lambda request-handler in a loop"
+(defn- initialize-handler!
   [request-handler]
-  (handle-next-request! request-handler :initialize true)
-  (while true
-    (handle-next-request! request-handler)))
+  (let [{:keys [init-fn init-args]
+         [args] :arglists} (meta request-handler)
+        request-handler (case (count args)
+                          1 (fn [input _] (request-handler input))
+                          0 (fn [_ _] (request-handler))
+                          request-handler)]
+    (when init-fn
+      (try
+        (apply init-fn init-args)
+        (catch Throwable failure
+          (init-failure! failure))))
+    request-handler))
 
 (defn start!
-  "starts the runtime with the specified lambda function handlers"
+  "starts the lambda runtime"
   [& handlers]
-  (-> (apply resolve-handler handlers)
-      (run-lambda!)))
+  (let [request-handler (-> (resolve-handler handlers)
+                            (initialize-handler!))]
+    (handle-next-request! request-handler :initialize true)
+    (while true
+      (handle-next-request! request-handler))))
