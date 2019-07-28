@@ -4,7 +4,6 @@
             [clojure.string :as string]
             [clojure.set :refer [rename-keys]])
   (:import [java.lang.reflect Field]
-           [clojure.lang Var Symbol]
            [java.util Map]))
 
 (def ^:private mutable-env
