@@ -66,7 +66,8 @@
     (->> (->error-response failure)
          (json/generate-string)
          (assoc {} :body)
-         (client/post failure-url))))
+         (client/post failure-url))
+    (System/exit 0)))
 
 (defn- post-failure!
   [{:keys [aws-request-id]} failure]
@@ -95,8 +96,7 @@
     (when-not request-handler
       (let [failure (ex-info (format "unable to resolve lambda request handler: %s" handler-name) 
                              {:handler handler-name})]
-        (init-failure! failure)
-        (throw failure))) 
+        (init-failure! failure))) 
     request-handler))
 
 (defn- handle-next-request!
