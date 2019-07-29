@@ -42,3 +42,12 @@ functions:
 
   http-example:
     handler: clj-native-lambda-poc.example/http-handler
+
+  request-error-example:
+    handler: clj-native-lambda-poc.example/request-error-handler
+
+  init-error-example:
+    handler: clj-native-lambda-poc.example/init-error-handler
+
+  sql-example:
+    handler: clj-native-lambda-poc.example/sql-handler

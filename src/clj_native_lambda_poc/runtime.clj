@@ -2,7 +2,8 @@
   (:require [clj-http.lite.client :as client]
             [cheshire.core :as json]
             [clojure.string :as string]
-            [clojure.set :refer [rename-keys]])
+            [clojure.set :refer [rename-keys]]
+            [clojure.tools.logging :as log])
   (:import [java.lang.reflect Field]
            [java.util Map]))
 
@@ -61,7 +62,6 @@
 
 (defn- init-failure!
   [failure]
-  (println failure)
   (let [failure-url (format "http://%s/2018-06-01/runtime/init/error" @runtime-api)]
     (->> (->error-response failure)
          (json/generate-string)
@@ -70,7 +70,6 @@
 
 (defn- post-failure!
   [{:keys [aws-request-id]} failure]
-  (println failure)
   (let [failure-url (format "http://%s/2018-06-01/runtime/invocation/%s/error" @runtime-api aws-request-id)]
     (->> (->error-response failure)
          (json/generate-string)
@@ -108,9 +107,10 @@
         (let [response (request-handler input context)]
           (post-success! context response))
         (catch Throwable failure
+          (log/error failure "Unhandled error in request handler.")
           (post-failure! context failure))))
     (catch Throwable failure
-      (println failure)
+      (log/error failure "Unhandled error interacting with runtime.")
       (when initialize
         (init-failure! failure)))))
 
@@ -126,6 +126,7 @@
       (try
         (apply init-fn init-args)
         (catch Throwable failure
+          (log/error failure "Unhandled error initializing handler.")
           (init-failure! failure))))
     request-handler))
 

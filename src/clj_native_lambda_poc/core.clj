@@ -9,4 +9,7 @@
     #'example/echo-handler
     #'example/dynamodb-handler
     #'example/s3-handler
-    #'example/http-handler))
+    #'example/http-handler
+    #'example/sql-handler
+    #'example/request-error-handler
+    #'example/init-error-handler))
