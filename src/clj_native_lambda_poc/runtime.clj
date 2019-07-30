@@ -3,9 +3,7 @@
             [cheshire.core :as json]
             [clojure.string :as string]
             [clojure.set :refer [rename-keys]]
-            [clojure.tools.logging :as log])
-  (:import [java.lang.reflect Field]
-           [java.util Map]))
+            [clojure.tools.logging :as log]))
 
 (defn- get-env
   [^String var-name]
