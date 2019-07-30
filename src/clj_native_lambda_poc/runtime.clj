@@ -114,15 +114,15 @@
 
 (defn- initialize-handler!
   [request-handler]
-  (let [{:keys [init-fn init-args]
+  (let [{:keys [init]
          [args] :arglists} (meta request-handler)
         request-handler (case (count args)
                           1 (fn [input _] (request-handler input))
                           0 (fn [_ _] (request-handler))
                           request-handler)]
-    (when init-fn
+    (when init
       (try
-        (apply init-fn init-args)
+        (init)
         (catch Throwable failure
           (log/error failure "Unhandled error initializing handler.")
           (init-failure! failure))))

@@ -43,21 +43,21 @@
       ds-pool)))
 
 ;; uses rest-json protocol
-(defn ^{:init-fn deref :init-args [dynamodb-client]} dynamodb-handler
+(defn ^{:init #(deref dynamodb-client)} dynamodb-handler
   [input context]
   (let [^DynamoDbClient client @dynamodb-client
         ^ListTablesResponse response (.listTables client)]
     (.tableNames response)))
 
 ;; uses rest-xml protocol
-(defn ^{:init-fn deref :init-args [s3-client]} s3-handler 
+(defn ^{:init #(deref s3-client)} s3-handler 
   [input context]
   (let [^S3Client client @s3-client
         ^ListBucketsResponse response (.listBuckets client)]
     (for [^Bucket bucket (.buckets response)]
       (.name bucket))))
 
-(defn ^{:init-fn deref :init-args [psqldb-client]} sql-handler
+(defn ^{:init #(deref psqldb-client)} sql-handler
   []
   (jdbc/with-db-connection [conn {:datasource @psqldb-client}]
     (let [rows (jdbc/query conn "SELECT 0 AS num")]
@@ -67,7 +67,7 @@
   []
   (throw (ex-info "request handler error." {})))
 
-(defn ^{:init-fn #(throw (ex-info "initialization error." {}))} init-error-handler
+(defn ^{:init #(throw (ex-info "initialization error." {}))} init-error-handler
   [])
 
 (defn http-handler
